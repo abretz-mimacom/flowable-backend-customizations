@@ -59,11 +59,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-engine</artifactId>
-			<version>6.0.0</version> <!-- Replace with the desired version -->
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>6.1.12</version>
@@ -82,34 +77,34 @@
 					<release>${maven.compiler.release}</release>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.6.1</version>
-				<executions>
-					<execution>
-						<id>copy-just-activiti</id>
-						<phase>package</phase>
-						<goals><goal>copy</goal></goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.activiti</groupId>
-									<artifactId>activiti-engine</artifactId>
-									<version>6.0.0</version>
-									<type>jar</type>
-									<!-- optional if the dep has a classifier -->
-									<!-- <classifier>shaded</classifier> -->
-									<outputDirectory>${project.build.directory}/lib</outputDirectory>
-									<!-- optional custom filename -->
-									<!-- <destFileName>okhttp.jar</destFileName> -->
-								</artifactItem>
-							</artifactItems>
-							<overWriteIfNewer>true</overWriteIfNewer>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-dependency-plugin</artifactId>-->
+<!--				<version>3.6.1</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>copy-just-activiti</id>-->
+<!--						<phase>package</phase>-->
+<!--						<goals><goal>copy</goal></goals>-->
+<!--						<configuration>-->
+<!--							<artifactItems>-->
+<!--								<artifactItem>-->
+<!--									<groupId>org.activiti</groupId>-->
+<!--									<artifactId>activiti-engine</artifactId>-->
+<!--									<version>6.0.0</version>-->
+<!--									<type>jar</type>-->
+<!--									&lt;!&ndash; optional if the dep has a classifier &ndash;&gt;-->
+<!--									&lt;!&ndash; <classifier>shaded</classifier> &ndash;&gt;-->
+<!--									<outputDirectory>${project.build.directory}/lib</outputDirectory>-->
+<!--									&lt;!&ndash; optional custom filename &ndash;&gt;-->
+<!--									&lt;!&ndash; <destFileName>okhttp.jar</destFileName> &ndash;&gt;-->
+<!--								</artifactItem>-->
+<!--							</artifactItems>-->
+<!--							<overWriteIfNewer>true</overWriteIfNewer>-->
+<!--						</configuration>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 			<!-- Fail fast if Java version drifts -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
