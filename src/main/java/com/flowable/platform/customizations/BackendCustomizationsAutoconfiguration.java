@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 @AutoConfiguration(after = {PlatformAutoConfiguration.class})
 @EnableConfigurationProperties(BackendCustomizationProperties.class)
 public class BackendCustomizationsAutoconfiguration {
-//	@ConditionalOnMissingBean(name = "accountService")
+	@ConditionalOnMissingBean(name = "accountService")
 	@Bean
 	public JavaDelegate accountService(){
 		return new MyFlowableDelegate();
