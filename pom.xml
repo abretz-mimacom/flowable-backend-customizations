@@ -1,0 +1,134 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.flowable</groupId>
+		<artifactId>flowable-platform-bom</artifactId>
+		<version>2025.1.03</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<groupId>com.flowable.platform</groupId>
+	<artifactId>customizations</artifactId>
+	<version>2025.1.03</version>
+	<name>Flowable Delegates</name>
+	<description>Independent JavaDelegate JAR for Flowable classpath</description>
+	<packaging>jar</packaging>
+
+	<properties>
+		<!-- Match this to your Flowable runtime version -->
+		<!-- or 6.9.x if you’re on Flowable 6; align with your platform -->
+		<maven.compiler.release>21</maven.compiler.release>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<!-- Compile against Flowable APIs; do NOT package them -->
+		<dependency>
+			<groupId>com.flowable.platform</groupId>
+			<artifactId>flowable-spring-boot-starter-platform-rest</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowable</groupId>
+			<artifactId>flowable-engine</artifactId>
+			<version>${org.flowable.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Logging API only; Flowable provides the binding -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>2.0.12</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.flowable.platform</groupId>
+			<artifactId>flowable-platform-autoconfigure</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-engine</artifactId>
+			<version>6.0.0</version> <!-- Replace with the desired version -->
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>6.1.12</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- Use modern Java without juggling source/target -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
+				<configuration>
+					<release>${maven.compiler.release}</release>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.6.1</version>
+				<executions>
+					<execution>
+						<id>copy-just-activiti</id>
+						<phase>package</phase>
+						<goals><goal>copy</goal></goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.activiti</groupId>
+									<artifactId>activiti-engine</artifactId>
+									<version>6.0.0</version>
+									<type>jar</type>
+									<!-- optional if the dep has a classifier -->
+									<!-- <classifier>shaded</classifier> -->
+									<outputDirectory>${project.build.directory}/lib</outputDirectory>
+									<!-- optional custom filename -->
+									<!-- <destFileName>okhttp.jar</destFileName> -->
+								</artifactItem>
+							</artifactItems>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Fail fast if Java version drifts -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.5.0</version>
+				<executions>
+					<execution>
+						<id>enforce-java</id>
+						<goals><goal>enforce</goal></goals>
+						<configuration>
+							<rules>
+								<requireJavaVersion>
+									<version>[17,)</version>
+								</requireJavaVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
