@@ -1,1 +1,3 @@
 com.flowable.platform.customizations.delegates.MyFlowableDelegate
+com.flowable.platform.customizations.controller.CustomController
+com.flowable.platform.customizations.properties.BackendCustomizationProperties
