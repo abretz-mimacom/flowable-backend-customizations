@@ -1,0 +1,553 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:design="http://flowable.org/design" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Flowable Design" exporterVersion="2025.1.03" design:palette="flowable-engage-process-palette">
+  <process id="StartAccount" name="StartCreateAccountProcess" isExecutable="true">
+    <extensionElements>
+      <design:stencilid><![CDATA[BPMNDiagram]]></design:stencilid>
+      <design:creationdate><![CDATA[2025-10-29T20:44:44.083Z]]></design:creationdate>
+      <design:modificationdate><![CDATA[2025-10-29T20:44:44.083Z]]></design:modificationdate>
+    </extensionElements>
+    <startEvent id="id_Start">
+      <extensionElements>
+        <design:stencilid><![CDATA[StartNoneEvent]]></design:stencilid>
+      </extensionElements>
+    </startEvent>
+    <serviceTask id="id_Account" name="account" flowable:expression="${accountService}">
+      <extensionElements>
+        <design:stencilid><![CDATA[ServiceTask]]></design:stencilid>
+        <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="id_ProducerValidation" name="producerValidation" flowable:expression="${producerValidation}">
+      <extensionElements>
+        <design:stencilid><![CDATA[ServiceTask]]></design:stencilid>
+        <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="id_parallelSequenceFlow2" name="prallelSequenceFlow2" sourceRef="id_b_ParallelGateway" targetRef="id_ProducerValidation">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <userTask id="id_HandleAccountConflict" name="handleAccountConflict" flowable:assignee="${assignee}">
+      <documentation>${conflict}</documentation>
+      <extensionElements>
+        <design:stencilid><![CDATA[FormTask]]></design:stencilid>
+        <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="id_a_SubExGateway" name="a_SubExGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[Exclusive_Databased_Gateway]]></design:stencilid>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="sid-f535182c-cf6d-4a09-955e-cd300112e423" sourceRef="id_Account" targetRef="id_a_SubExGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="id_conflictSequence" name="conflictSequence" sourceRef="id_a_SubExGateway" targetRef="id_HandleAccountConflict">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result == "conflict"}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="id_Submission" name="submission" flowable:expression="${submissionService}">
+      <extensionElements>
+        <design:stencilid><![CDATA[ServiceTask]]></design:stencilid>
+        <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+      </extensionElements>
+    </serviceTask>
+    <userTask id="id_HandleSubmissionConflict" name="handleSubmissionConflict">
+      <documentation>${conflict}</documentation>
+      <extensionElements>
+        <design:stencilid><![CDATA[FormTask]]></design:stencilid>
+        <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="id_sequenceSubmissionClearance" name="sequenceSubmissionClearance" sourceRef="id_Submission" targetRef="id_postSubmissionGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <parallelGateway id="id_b_ParallelGateway" name="b_ParallelGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[ParallelGateway]]></design:stencilid>
+      </extensionElements>
+    </parallelGateway>
+    <serviceTask id="id_Ofac" name="ofac" flowable:expression="${ofacService}">
+      <extensionElements>
+        <design:stencilid><![CDATA[ServiceTask]]></design:stencilid>
+        <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="id_sequenceProducerValidation" name="sequenceProducerValidation" sourceRef="id_ProducerValidation" targetRef="id_validProducerGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${producerResult == "cleared"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="id_sequenceParallelClearance" name="sequenceParallelClearance" sourceRef="id_c_SubExGateway" targetRef="id_Submission">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${producerResult == "cleared" && ofacResult == "cleared" }]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="id_sequenceOfacClearance" name="sequenceOfacClearance" sourceRef="id_Ofac" targetRef="id_ofac1Gateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="id_clearedSequence" name="clearedSequence" sourceRef="id_a_SubExGateway" targetRef="id_postAccountGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result == "cleared"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="id_parallelSequenceFlow1" name="parallelSequenceFlow1" sourceRef="id_b_ParallelGateway" targetRef="id_Ofac">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <exclusiveGateway id="id_postAccountGateway" name="postAccountGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[Exclusive_Databased_Gateway]]></design:stencilid>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="id_sequencePostAccountConflict" name="sequencePostAccountConflict" sourceRef="id_HandleAccountConflict" targetRef="id_postAccountGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <exclusiveGateway id="id_ruleNoOfDaysGateway" name="ruleNoOfDaysGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[Exclusive_Databased_Gateway]]></design:stencilid>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="id_sequenceNoOfDaysRule" name="sequenceNoOfDaysRule" sourceRef="id_ruleNoOfDays" targetRef="id_ruleNoOfDaysGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="id_sequenceNoOfDaysFailure" name="sequenceNoOfDaysFailure" sourceRef="id_ruleNoOfDaysGateway" targetRef="id_ruleNoOfDaysFailureMail">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${rule == "failed"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="id_sequenceRuleNoOfDaysSuccess" name="sequenceRuleNoOfDaysSuccess" sourceRef="id_ruleNoOfDaysGateway" targetRef="id_b_ParallelGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${rule == "success"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="id_sequencePostAccountGateway" name="sequencePostAccountGateway" sourceRef="id_postAccountGateway" targetRef="id_ruleNoOfDays">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="id_startSequence" name="startSequence" sourceRef="id_Start" targetRef="id_Account">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <endEvent id="id_finalStop" name="finalStop">
+      <extensionElements>
+        <design:stencilid><![CDATA[EndNoneEvent]]></design:stencilid>
+      </extensionElements>
+    </endEvent>
+    <serviceTask id="id_ruleNoOfDays" name="ruleNoOfDays" flowable:expression="${rulesService}">
+      <extensionElements>
+        <design:stencilid><![CDATA[ServiceTask]]></design:stencilid>
+        <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+      </extensionElements>
+    </serviceTask>
+    <endEvent id="id_stopForAccountFailure" name="stopForAccountFailure">
+      <extensionElements>
+        <design:stencilid><![CDATA[EndNoneEvent]]></design:stencilid>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="id_sequenceOtherAccountStatus" name="sequenceOtherAccountStatus" sourceRef="id_a_SubExGateway" targetRef="id_stopForAccountFailure">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result == "other"}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="id_ruleNoOfDaysFailureMail" name="ruleNoOfDaysFailureMail" flowable:expression="${mailService}">
+      <extensionElements>
+        <design:stencilid><![CDATA[ServiceTask]]></design:stencilid>
+        <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="id_sequenceOFACPending" name="sequenceOFACPending" sourceRef="id_ofac1Gateway" targetRef="id_handleOfac">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ofacResult == "pending"}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="id_ofacStop" name="ofacStop">
+      <extensionElements>
+        <design:stencilid><![CDATA[EndNoneEvent]]></design:stencilid>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="id_sequenceOFACPendingFaliure" name="sequenceOFACPendingFaliure" sourceRef="id_handleOfac" targetRef="id_ofacStop">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ofacResult == "failed"}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="id_ofac2Gateway" name="ofac2Gateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[Exclusive_Databased_Gateway]]></design:stencilid>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="id_sequenceOFACCleared" name="sequenceOFACCleared" sourceRef="id_ofac1Gateway" targetRef="id_ofac2Gateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ofacResult == "cleared"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="id_sequenceOFACPendingCleared" name="sequenceOFACPendingCleared" sourceRef="id_handleOfac" targetRef="id_ofac2Gateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ofacResult == "cleared"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="id_sequenceOFACAllCleared" name="sequenceOFACAllCleared" sourceRef="id_ofac2Gateway" targetRef="id_c_SubExGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <parallelGateway id="id_c_SubExGateway" name="c_SubExGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[ParallelGateway]]></design:stencilid>
+      </extensionElements>
+    </parallelGateway>
+    <exclusiveGateway id="id_postSubmissionGateway" name="postSubmissionGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[Exclusive_Databased_Gateway]]></design:stencilid>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="id_sequenceSubmissionConflict" name="sequenceSubmissionConflict" sourceRef="id_postSubmissionGateway" targetRef="id_HandleSubmissionConflict">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${submissionResult == "failed"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="id_sequenceSubmissionConflictClearance" name="sequenceSubmissionConflictClearance" sourceRef="id_HandleSubmissionConflict" targetRef="id_finalStop">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="id_sequenceSubmissionCleared" name="sequenceSubmissionCleared" sourceRef="id_postSubmissionGateway" targetRef="id_finalStop">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${submissionResult == "cleared"}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="id_declineSubmission" name="declineSubmission" flowable:expression="${submissionDeclineService}">
+      <extensionElements>
+        <design:stencilid><![CDATA[ServiceTask]]></design:stencilid>
+        <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+      </extensionElements>
+    </serviceTask>
+    <endEvent id="sid-a7a5f608-a4b1-46d4-8d25-07dbe6e35abf">
+      <extensionElements>
+        <design:stencilid><![CDATA[EndNoneEvent]]></design:stencilid>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="id_sequencePostSubmissionDecline" sourceRef="id_declineSubmission" targetRef="sid-a7a5f608-a4b1-46d4-8d25-07dbe6e35abf">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="id_sequenceDeclineSubmission" sourceRef="id_ruleNoOfDaysFailureMail" targetRef="id_declineSubmission">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <exclusiveGateway id="id_failedProducerGateway" name="failedProducerGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[Exclusive_Databased_Gateway]]></design:stencilid>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="id_sequenceProducerFailed" name="sequenceProducerFailed" sourceRef="id_ProducerValidation" targetRef="id_failedProducerGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${producerResult == "failed"}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="id_handleProducerSearch" name="handleProducerSearch">
+      <documentation>${producer_error}</documentation>
+      <extensionElements>
+        <design:stencilid><![CDATA[FormTask]]></design:stencilid>
+        <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-042fa431-afe9-4a5a-a7d1-67ef53c9c0fa" sourceRef="id_failedProducerGateway" targetRef="id_handleProducerSearch">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="id_sequenceProducerSelected" name="sequenceProducerSelected" sourceRef="id_handleProducerSearch" targetRef="id_validProducerGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${producerSearchResult == "cleared"}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="id_stopFailedProducer" name="stopFailedProducer">
+      <extensionElements>
+        <design:stencilid><![CDATA[EndNoneEvent]]></design:stencilid>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="id_failedProducerSearch" name="failedProducerSearch" sourceRef="id_handleProducerSearch" targetRef="id_stopFailedProducer">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${producerSearchResult == "failed"}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="id_validProducerGateway" name="validProducerGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[Exclusive_Databased_Gateway]]></design:stencilid>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="sid-b139e817-f5ac-4eac-9406-4b679da4f427" sourceRef="id_validProducerGateway" targetRef="id_c_SubExGateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+      </extensionElements>
+    </sequenceFlow>
+    <exclusiveGateway id="id_ofac1Gateway" name="ofac1Gateway">
+      <extensionElements>
+        <design:stencilid><![CDATA[Exclusive_Databased_Gateway]]></design:stencilid>
+      </extensionElements>
+    </exclusiveGateway>
+    <userTask id="id_handleOfac" name="handleOfac">
+      <documentation>${ofacDesc}</documentation>
+      <extensionElements>
+        <design:stencilid><![CDATA[FormTask]]></design:stencilid>
+        <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+      </extensionElements>
+    </userTask>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_StartAccount">
+    <bpmndi:BPMNPlane bpmnElement="StartAccount" id="BPMNPlane_StartAccount">
+      <bpmndi:BPMNShape bpmnElement="id_Start" id="BPMNShape_id_Start">
+        <omgdc:Bounds height="30.0" width="30.0" x="-290.0" y="-30.651316"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_Account" id="BPMNShape_id_Account">
+        <omgdc:Bounds height="80.0" width="100.0" x="-210.0" y="-55.651314"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_ProducerValidation" id="BPMNShape_id_ProducerValidation">
+        <omgdc:Bounds height="80.0" width="99.99999999999994" x="459.99994" y="10.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_HandleAccountConflict" id="BPMNShape_id_HandleAccountConflict">
+        <omgdc:Bounds height="70.0" width="100.0" x="20.000015" y="-195.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_a_SubExGateway" id="BPMNShape_id_a_SubExGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="-60.0" y="-35.651318"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_Submission" id="BPMNShape_id_Submission">
+        <omgdc:Bounds height="80.0" width="100.0" x="845.0" y="-10.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_HandleSubmissionConflict" id="BPMNShape_id_HandleSubmissionConflict">
+        <omgdc:Bounds height="80.0" width="100.0" x="1170.0" y="-104.99999"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_b_ParallelGateway" id="BPMNShape_id_b_ParallelGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="385.0" y="-35.651314"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_Ofac" id="BPMNShape_id_Ofac">
+        <omgdc:Bounds height="80.0" width="100.0" x="465.0" y="-130.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_postAccountGateway" id="BPMNShape_id_postAccountGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="165.0" y="-110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_ruleNoOfDaysGateway" id="BPMNShape_id_ruleNoOfDaysGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="320.00003" y="-108.930504"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_finalStop" id="BPMNShape_id_finalStop">
+        <omgdc:Bounds height="30.0" width="30.0" x="1335.0" y="15.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_ruleNoOfDays" id="BPMNShape_id_ruleNoOfDays">
+        <omgdc:Bounds height="50.0" width="55.0" x="240.00002" y="-115.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_stopForAccountFailure" id="BPMNShape_id_stopForAccountFailure">
+        <omgdc:Bounds height="30.0" width="30.0" x="-55.0" y="70.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_ruleNoOfDaysFailureMail" id="BPMNShape_id_ruleNoOfDaysFailureMail">
+        <omgdc:Bounds height="50.0" width="80.0" x="300.0" y="-269.3487"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_ofacStop" id="BPMNShape_id_ofacStop">
+        <omgdc:Bounds height="30.0" width="30.0" x="935.0" y="-215.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_ofac2Gateway" id="BPMNShape_id_ofac2Gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="670.0" y="-100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_c_SubExGateway" id="BPMNShape_id_c_SubExGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="669.1998" y="10.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_postSubmissionGateway" id="BPMNShape_id_postSubmissionGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="1085.0" y="10.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_declineSubmission" id="BPMNShape_id_declineSubmission">
+        <omgdc:Bounds height="60.0" width="85.0" x="390.0" y="-380.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-a7a5f608-a4b1-46d4-8d25-07dbe6e35abf" id="BPMNShape_sid-a7a5f608-a4b1-46d4-8d25-07dbe6e35abf">
+        <omgdc:Bounds height="30.0" width="30.0" x="535.0" y="-364.99997"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_failedProducerGateway" id="BPMNShape_id_failedProducerGateway">
+        <omgdc:Bounds height="40.0" width="39.99999999999994" x="489.99994" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_handleProducerSearch" id="BPMNShape_id_handleProducerSearch">
+        <omgdc:Bounds height="80.0" width="99.99999999999994" x="459.99994" y="214.99998"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_stopFailedProducer" id="BPMNShape_id_stopFailedProducer">
+        <omgdc:Bounds height="30.0" width="29.999999999999943" x="494.99994" y="340.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_validProducerGateway" id="BPMNShape_id_validProducerGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="610.0" y="10.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_ofac1Gateway" id="BPMNShape_id_ofac1Gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="670.0" y="-220.00002"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="id_handleOfac" id="BPMNShape_id_handleOfac">
+        <omgdc:Bounds height="70.0" width="90.0" x="795.00006" y="-235.00002"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceNoOfDaysRule" id="BPMNEdge_id_sequenceNoOfDaysRule" flowable:sourceDockerX="28.0" flowable:sourceDockerY="25.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="295.0" y="-90.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="-88.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceParallelClearance" id="BPMNEdge_id_sequenceParallelClearance" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="709.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="845.0" y="30.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceProducerFailed" id="BPMNEdge_id_sequenceProducerFailed" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="509.0" y="90.0"></omgdi:waypoint>
+        <omgdi:waypoint x="510.0" y="140.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_startSequence" id="BPMNEdge_id_startSequence" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="-260.0" y="-15.0"></omgdi:waypoint>
+        <omgdi:waypoint x="-210.0" y="-15.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceProducerValidation" id="BPMNEdge_id_sequenceProducerValidation" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="559.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="584.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="609.0" y="30.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-042fa431-afe9-4a5a-a7d1-67ef53c9c0fa" id="BPMNEdge_sid-042fa431-afe9-4a5a-a7d1-67ef53c9c0fa" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="509.0" y="180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="509.0" y="214.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceOFACPendingCleared" id="BPMNEdge_id_sequenceOFACPendingCleared" flowable:sourceDockerX="45.0" flowable:sourceDockerY="35.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="840.0" y="-165.0"></omgdi:waypoint>
+        <omgdi:waypoint x="840.0" y="-80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="710.0" y="-80.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequencePostAccountGateway" id="BPMNEdge_id_sequencePostAccountGateway" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="28.0" flowable:targetDockerY="25.0">
+        <omgdi:waypoint x="205.0" y="-90.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="-90.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceProducerSelected" id="BPMNEdge_id_sequenceProducerSelected" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="559.0" y="254.0"></omgdi:waypoint>
+        <omgdi:waypoint x="630.0" y="255.0"></omgdi:waypoint>
+        <omgdi:waypoint x="630.0" y="50.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-f535182c-cf6d-4a09-955e-cd300112e423" id="BPMNEdge_sid-f535182c-cf6d-4a09-955e-cd300112e423" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="-110.0" y="-15.0"></omgdi:waypoint>
+        <omgdi:waypoint x="-60.0" y="-15.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceOFACAllCleared" id="BPMNEdge_id_sequenceOFACAllCleared" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="690.0" y="-60.0"></omgdi:waypoint>
+        <omgdi:waypoint x="689.0" y="10.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-b139e817-f5ac-4eac-9406-4b679da4f427" id="BPMNEdge_sid-b139e817-f5ac-4eac-9406-4b679da4f427" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="650.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="669.0" y="30.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequencePostSubmissionDecline" id="BPMNEdge_id_sequencePostSubmissionDecline" flowable:sourceDockerX="43.0" flowable:sourceDockerY="30.0" flowable:targetDockerX="15.0" flowable:targetDockerY="15.0">
+        <omgdi:waypoint x="475.0" y="-350.0"></omgdi:waypoint>
+        <omgdi:waypoint x="535.0" y="-349.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceRuleNoOfDaysSuccess" id="BPMNEdge_id_sequenceRuleNoOfDaysSuccess" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="340.0" y="-68.0"></omgdi:waypoint>
+        <omgdi:waypoint x="340.0" y="-15.0"></omgdi:waypoint>
+        <omgdi:waypoint x="385.0" y="-15.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceOFACPending" id="BPMNEdge_id_sequenceOFACPending" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="45.0" flowable:targetDockerY="35.0">
+        <omgdi:waypoint x="710.0" y="-200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="795.0" y="-200.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceDeclineSubmission" id="BPMNEdge_id_sequenceDeclineSubmission" flowable:sourceDockerX="40.0" flowable:sourceDockerY="25.0" flowable:targetDockerX="43.0" flowable:targetDockerY="30.0">
+        <omgdi:waypoint x="340.0" y="-269.0"></omgdi:waypoint>
+        <omgdi:waypoint x="340.0" y="-350.0"></omgdi:waypoint>
+        <omgdi:waypoint x="390.0" y="-349.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceOfacClearance" id="BPMNEdge_id_sequenceOfacClearance" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="515.0" y="-130.0"></omgdi:waypoint>
+        <omgdi:waypoint x="515.0" y="-200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="670.0" y="-200.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceOtherAccountStatus" id="BPMNEdge_id_sequenceOtherAccountStatus" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="15.0" flowable:targetDockerY="15.0">
+        <omgdi:waypoint x="-40.0" y="4.0"></omgdi:waypoint>
+        <omgdi:waypoint x="-40.0" y="70.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceSubmissionConflictClearance" id="BPMNEdge_id_sequenceSubmissionConflictClearance" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="15.0" flowable:targetDockerY="15.0">
+        <omgdi:waypoint x="1270.0" y="-64.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1342.0" y="-65.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1342.0" y="14.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceSubmissionCleared" id="BPMNEdge_id_sequenceSubmissionCleared" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="15.0" flowable:targetDockerY="15.0">
+        <omgdi:waypoint x="1125.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1335.0" y="30.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceOFACCleared" id="BPMNEdge_id_sequenceOFACCleared" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="690.0" y="-180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="690.0" y="-100.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceSubmissionClearance" id="BPMNEdge_id_sequenceSubmissionClearance" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="945.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1090.0" y="30.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_conflictSequence" id="BPMNEdge_id_conflictSequence" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="50.0" flowable:targetDockerY="35.0">
+        <omgdi:waypoint x="-40.0" y="-35.0"></omgdi:waypoint>
+        <omgdi:waypoint x="-40.0" y="-159.0"></omgdi:waypoint>
+        <omgdi:waypoint x="20.0" y="-160.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_parallelSequenceFlow1" id="BPMNEdge_id_parallelSequenceFlow1" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="405.0" y="-35.0"></omgdi:waypoint>
+        <omgdi:waypoint x="405.0" y="-100.0"></omgdi:waypoint>
+        <omgdi:waypoint x="465.0" y="-100.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceNoOfDaysFailure" id="BPMNEdge_id_sequenceNoOfDaysFailure" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="40.0" flowable:targetDockerY="25.0">
+        <omgdi:waypoint x="340.0" y="-108.0"></omgdi:waypoint>
+        <omgdi:waypoint x="339.0" y="-219.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_failedProducerSearch" id="BPMNEdge_id_failedProducerSearch" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="15.0" flowable:targetDockerY="15.0">
+        <omgdi:waypoint x="509.0" y="295.0"></omgdi:waypoint>
+        <omgdi:waypoint x="509.0" y="340.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_parallelSequenceFlow2" id="BPMNEdge_id_parallelSequenceFlow2" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="405.0" y="4.0"></omgdi:waypoint>
+        <omgdi:waypoint x="405.0" y="50.0"></omgdi:waypoint>
+        <omgdi:waypoint x="459.0" y="50.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceOFACPendingFaliure" id="BPMNEdge_id_sequenceOFACPendingFaliure" flowable:sourceDockerX="45.0" flowable:sourceDockerY="35.0" flowable:targetDockerX="15.0" flowable:targetDockerY="15.0">
+        <omgdi:waypoint x="885.0" y="-200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="935.0" y="-200.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_clearedSequence" id="BPMNEdge_id_clearedSequence" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="-20.0" y="-15.0"></omgdi:waypoint>
+        <omgdi:waypoint x="185.0" y="-15.0"></omgdi:waypoint>
+        <omgdi:waypoint x="185.0" y="-70.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequencePostAccountConflict" id="BPMNEdge_id_sequencePostAccountConflict" flowable:sourceDockerX="50.0" flowable:sourceDockerY="35.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="120.0" y="-160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="185.0" y="-160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="185.0" y="-110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="id_sequenceSubmissionConflict" id="BPMNEdge_id_sequenceSubmissionConflict" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="1105.0" y="10.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1105.0" y="-64.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1170.0" y="-64.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
