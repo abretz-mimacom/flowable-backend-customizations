@@ -6,7 +6,7 @@ RUN apk add --no-cache wget unzip && \
 FROM repo.flowable.com/docker/flowable/flowable-work:latest
 
 USER root
-COPY target/*.jar /additional-classpath/
+COPY flowable-sbm-orch/target/*.jar /additional-classpath/
 COPY --from=downloader /tmp/microsoft/sqljdbc_13.2/enu/jars/mssql-jdbc-13.2.1.jre11.jar /additional-classpath/mssql-jdbc-13.2.1.jre11.jar
 
 USER flowable

@@ -11,12 +11,11 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>com.flowable.platform</groupId>
-	<artifactId>customizations</artifactId>
-	<version>2025.1.03</version>
-	<name>Flowable Delegates</name>
-	<description>Independent JavaDelegate JAR for Flowable classpath</description>
-	<packaging>jar</packaging>
+	<groupId>com.archinsurance.ss.sbmorchestration</groupId>
+	<artifactId>sbm-orchestration-parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Sbm Orchestration Parent</name>
 
 	<properties>
 		<!-- Match this to your Flowable runtime version -->
@@ -25,46 +24,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<dependencies>
-		<!-- Compile against Flowable APIs; do NOT package them -->
-		<dependency>
-			<groupId>com.flowable.platform</groupId>
-			<artifactId>flowable-spring-boot-starter-platform-rest</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.flowable</groupId>
-			<artifactId>flowable-engine</artifactId>
-			<version>${org.flowable.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Logging API only; Flowable provides the binding -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>2.0.12</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.flowable.platform</groupId>
-			<artifactId>flowable-platform-autoconfigure</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>6.1.12</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
+	<modules>
+		<module>flowable-sbm-orch</module>
+		<module>flowable-sbm-orch-app</module>
+	</modules>
 
 	<build>
 		<plugins>
